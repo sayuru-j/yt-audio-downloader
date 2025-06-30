@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File
 from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, HttpUrl
 import yt_dlp
 import os
@@ -132,6 +133,18 @@ def extract_browser_cookies_to_file():
     return False
 
 app = FastAPI(title="YouTube Audio Downloader API", version="1.0.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",    
+        "https://dataset-malli.vercel.app",  
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 @app.get("/cookies/status")
 async def get_cookie_status() -> CookieStatus:
